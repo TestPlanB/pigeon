@@ -1,4 +1,4 @@
-# pigeopn
+# pigeon
 
 ## pigeopn 是一个完全由kotlin编写的适用于android开发的数据总线型库，便于在项目中实现数据解耦，实现方便且稳定的数据流通讯
 与市面上常见的总线型库相比，如eventbus ，有如下特点：
