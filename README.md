@@ -11,7 +11,8 @@
 
 ## 项目层级介绍
 * **包含module分别为测试代码与核心代码**
+* **常规的代码层级**
 
-##环境准备
+## 环境准备
 建议直接用最新的稳定版本Android Studio打开工程。目前项目已适配`Android Studio Arctic Fox | 2020.3.1`，
 低版本的Android Studio可能因为Gradle版本过高而无法正常打开项目。
