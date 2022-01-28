@@ -7,11 +7,12 @@
     tools:context=".SecondActivity">
     <TextView
         android:id="@+id/text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="40dp"
-        android:text="click"/>
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="发送普通消息"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

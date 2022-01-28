@@ -1,5 +1,6 @@
 package com.example.pigeon_core
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.example.pigeon_core.extention.setLifeCycle
 import kotlinx.coroutines.*
@@ -50,18 +51,25 @@ object MessageCenter {
             SubscribeEnv.DEFAULT -> CoroutineScope(Dispatchers.Default)
             else -> CoroutineScope(Dispatchers.Main)
         }
+
         coroutineScope.launch {
             events[event]?.collect {
                 if (it is T) {
                     dos.invoke(it)
                 }
             }
+
+        }.setLifeCycle(owner.lifecycle)
+
+        coroutineScope.launch {
             stickyEvents[event]?.collect {
+                Log.i("hello","${events[event]}  ${stickyEvents[event]}")
                 if (it is T) {
                     dos.invoke(it)
                 }
             }
         }.setLifeCycle(owner.lifecycle)
+
 
     }
 }
