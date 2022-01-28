@@ -9,6 +9,23 @@
 * **底层实现采用flow api，稳定，更加高效**
 * **流程通俗易懂，便于学习和二次开发**
 
+## 使用说明
+### 发送数据
+```
+实现lifecylceOwner的类可以采用如下方式
+this.post(数据，【可选，是否是粘性事件，默认为false】)
+
+或者直接使用库提供的方式
+MessageCenter.post(event,isStick)
+```
+
+### 接收/订阅数据
+
+```
+this.subscribeEvent(数据类型，如String::class.java,【可选消息处理线程，默认是主线程】) {
+               dosomething
+            }
+```
 ## 项目层级介绍
 * **包含module分别为测试代码与核心代码**
 * **常规的代码层级**
