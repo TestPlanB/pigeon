@@ -1,6 +1,5 @@
 package com.example.pigeon_core
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.example.pigeon_core.extention.setLifeCycle
 import kotlinx.coroutines.*
@@ -11,7 +10,10 @@ import java.util.concurrent.ConcurrentHashMap
 
 object MessageCenter {
     var events = ConcurrentHashMap<Any, MutableSharedFlow<Any>>()
+        private set
+
     var stickyEvents = ConcurrentHashMap<Any, MutableSharedFlow<Any>>()
+        private set
 
 
     inline fun <reified T> post(event: T, isStick: Boolean) {
@@ -35,7 +37,7 @@ object MessageCenter {
         event: Class<T>,
         crossinline dos: (T) -> Unit,
         owner: LifecycleOwner,
-        env:SubscribeEnv
+        env: SubscribeEnv
     ) {
         if (!events.containsKey(event)) {
             events[event] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
@@ -43,7 +45,7 @@ object MessageCenter {
         if (!stickyEvents.containsKey(event)) {
             stickyEvents[event] = MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
         }
-        val coroutineScope:CoroutineScope = when (env) {
+        val coroutineScope: CoroutineScope = when (env) {
             SubscribeEnv.IO -> CoroutineScope(Dispatchers.IO)
             SubscribeEnv.DEFAULT -> CoroutineScope(Dispatchers.Default)
             else -> CoroutineScope(Dispatchers.Main)
