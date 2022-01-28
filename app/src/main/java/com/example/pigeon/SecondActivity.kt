@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import com.example.pigeon_core.MessageCenter
+import com.example.pigeon_core.extention.post
 
 class SecondActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +14,7 @@ class SecondActivity : AppCompatActivity() {
         text.setOnClickListener {
             val test = "123"
             val test2 = ArrayList<String>()
-            MessageCenter.post(test)
+            this.post(test)
         }
     }
 }

@@ -14,9 +14,8 @@ object MessageCenter {
     var stickyEvents = ConcurrentHashMap<Any, MutableSharedFlow<Any>>()
 
 
-    inline fun <reified T> post(event: T, isStick: Boolean = false) {
+    inline fun <reified T> post(event: T, isStick: Boolean) {
         val cls = T::class.java
-        Log.i("hello", "cls is $cls")
         if (!isStick) {
             events[cls]?.tryEmit(event as Any) ?: run {
                 events[cls] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
@@ -38,13 +37,11 @@ object MessageCenter {
         owner: LifecycleOwner,
         env:SubscribeEnv
     ) {
-        val cls = event
-        Log.i("hello", "onEvent cls is $cls")
-        if (!events.containsKey(cls)) {
-            events[cls] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
+        if (!events.containsKey(event)) {
+            events[event] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
         }
-        if (!stickyEvents.containsKey(cls)) {
-            stickyEvents[cls] = MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
+        if (!stickyEvents.containsKey(event)) {
+            stickyEvents[event] = MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
         }
         val coroutineScope:CoroutineScope = when (env) {
             SubscribeEnv.IO -> CoroutineScope(Dispatchers.IO)
@@ -52,12 +49,12 @@ object MessageCenter {
             else -> CoroutineScope(Dispatchers.Main)
         }
         coroutineScope.launch {
-            events[cls]?.collect {
+            events[event]?.collect {
                 if (it is T) {
                     dos.invoke(it)
                 }
             }
-            stickyEvents[cls]?.collect {
+            stickyEvents[event]?.collect {
                 if (it is T) {
                     dos.invoke(it)
                 }
