@@ -20,17 +20,15 @@ object MessageCenter {
     inline fun <reified T> post(event: T, isStick: Boolean) {
         val cls = T::class.java
         if (!isStick) {
-            events[cls]?.tryEmit(event as Any) ?: run {
-                events[cls] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
-                events[cls]!!.tryEmit(event as Any)
-            }
+            stickyEvents.getOrElse(cls) {
+                MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
+            }.tryEmit(event as Any)
         } else {
-            stickyEvents[cls]?.tryEmit(event as Any) ?: run {
-                stickyEvents[cls] = MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
-                stickyEvents[cls]!!.tryEmit(event as Any)
-            }
-        }
+            stickyEvents.getOrElse(cls) {
+                MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
+            }.tryEmit(event as Any)
 
+        }
 
     }
 
@@ -40,12 +38,7 @@ object MessageCenter {
         owner: LifecycleOwner,
         env: SubscribeEnv
     ) {
-        if (!events.containsKey(event)) {
-            events[event] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
-        }
-        if (!stickyEvents.containsKey(event)) {
-            stickyEvents[event] = MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
-        }
+        initEvent(event)
         val coroutineScope: CoroutineScope = when (env) {
             SubscribeEnv.IO -> CoroutineScope(Dispatchers.IO)
             SubscribeEnv.DEFAULT -> CoroutineScope(Dispatchers.Default)
@@ -63,7 +56,6 @@ object MessageCenter {
 
         coroutineScope.launch {
             stickyEvents[event]?.collect {
-                Log.i("hello","${events[event]}  ${stickyEvents[event]}")
                 if (it is T) {
                     dos.invoke(it)
                 }
@@ -72,4 +64,14 @@ object MessageCenter {
 
 
     }
+
+    fun <T> initEvent(event: Class<T>) {
+        if (!events.containsKey(event)) {
+            events[event] = MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
+        }
+        if (!stickyEvents.containsKey(event)) {
+            stickyEvents[event] = MutableSharedFlow(1, 1, BufferOverflow.DROP_OLDEST)
+        }
+    }
+
 }

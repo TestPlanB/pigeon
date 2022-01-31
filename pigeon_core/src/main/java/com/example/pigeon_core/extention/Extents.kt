@@ -24,3 +24,4 @@ inline fun <reified T> LifecycleOwner.post(
     event: T,
     isStick: Boolean = false
 ) = MessageCenter.post(event,isStick)
+

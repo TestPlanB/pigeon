@@ -16,6 +16,7 @@ class SecondActivity : AppCompatActivity() {
         val text = this.findViewById<TextView>(R.id.text)
         text.setOnClickListener {
             val test = "123"
+            test.isNullOrEmpty()
             val test2 = ArrayList<String>()
             this.post("123")
         }
