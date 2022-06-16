@@ -20,7 +20,7 @@ object MessageCenter {
     inline fun <reified T> post(event: T, isStick: Boolean) {
         val cls = T::class.java
         if (!isStick) {
-            stickyEvents.getOrElse(cls) {
+            events.getOrElse(cls) {
                 MutableSharedFlow(0, 1, BufferOverflow.DROP_OLDEST)
             }.tryEmit(event as Any)
         } else {
